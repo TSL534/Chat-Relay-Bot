@@ -1,0 +1,80 @@
+const { Authflow } = require('prismarine-auth');
+const bedrock = require('bedrock-protocol');
+
+const realmInvite = "realmcodeahh";
+
+// for Server
+//const host = "serverip";
+//const port = 19132;
+
+async function startChatRelay(realmInvite) {
+  try {
+    const client = bedrock.createClient({
+     // host
+     // port
+      username: "Test",
+      uuid: "",
+      offline: false,
+      skinData: {
+        CurrentInputMode: 3,
+        DefaultInputMode: 3,
+        DeviceModel: 'NintendoSwitch',
+        DeviceOS: 12
+      },
+      realms: {
+        realmInvite
+      }
+    });
+
+    client.on('text', (packet) => {
+      const { type, message, xuid } = packet;
+
+      if (type === 'chat') {
+        if (message.startsWith('* External') || xuid === client.profile.xuid) return;
+        const logMessage = `${new Date().toISOString()} | <${packet.source_name}> ${message}`;
+        console.log(logMessage);
+      } 
+      
+      else if (type === 'json_whisper') {
+        let rawtext;
+        try {
+          rawtext = JSON.parse(message).rawtext;
+        } catch {
+          return;
+        }
+
+        let raw_message = `${new Date().toISOString()} | `;
+
+        if (rawtext.length > 25) rawtext.splice(25);
+
+        for (const component of rawtext) {
+          if (!component?.text) continue;
+          raw_message += component.text;
+        }
+
+        console.log(raw_message);
+      }
+    });
+
+    client.on('player_list', (packet) => {
+      for (const player of packet.records) {
+        if (player.username) {
+          const joinMessage = `${new Date().toISOString()} | ${player.username} Joind the Realm.`;
+          console.log(joinMessage); 
+        }
+      }
+    });
+
+    client.on('remove_player', (packet) => {
+      const leaveMessage = `${new Date().toISOString()} | A Player Left the Realm: ${packet.username}.`;
+      console.log(leaveMessage); 
+    });
+
+    console.log(`Successfully connected to Realm with code: ${realmInvite}`);
+
+  } catch (error) {
+    console.error('Error starting chat relay:', error);
+  }
+}
+
+startChatRelay(realmInvite);
