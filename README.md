@@ -11,3 +11,4 @@
 * Blocks External Messages ✅
 * Sends Messages Back ❌
 * Logs Joins/Leaves ✅
+* Shows Device on Join ✅
