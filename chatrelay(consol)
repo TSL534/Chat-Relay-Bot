@@ -1,17 +1,12 @@
-const { Authflow } = require('prismarine-auth');
 const bedrock = require('bedrock-protocol');
 
 const realmInvite = "realmcodeahh";
 
-// for Server
-//const host = "serverip";
-//const port = 19132;
+const playerNames = new Map(); // Store player UUIDs and usernames
 
 async function startChatRelay(realmInvite) {
   try {
     const client = bedrock.createClient({
-     // host
-     // port
       username: "Test",
       uuid: "",
       offline: false,
@@ -26,6 +21,7 @@ async function startChatRelay(realmInvite) {
       }
     });
 
+    // Handle chat messages
     client.on('text', (packet) => {
       const { type, message, xuid } = packet;
 
@@ -56,18 +52,58 @@ async function startChatRelay(realmInvite) {
       }
     });
 
+    // Handle player list events
     client.on('player_list', (packet) => {
-      for (const player of packet.records) {
-        if (player.username) {
-          const joinMessage = `${new Date().toISOString()} | ${player.username} Joind the Realm.`;
-          console.log(joinMessage); 
-        }
-      }
-    });
+      if (packet.records && Array.isArray(packet.records.records)) {
+        switch (packet.records.type) {
+          case 'add':
+            const players = packet.records.records;
+            for (const player of players) {
+              const Username = player.username;
+              const UUID = player.uuid;
+              const XUID = player.xbox_user_id;
+              let Device = player.build_platform;
+              switch (player.build_platform) {
+                case 0: Device = 'Unknown'; break;
+                case 1: Device = 'Android'; break;
+                case 2: Device = 'IOS'; break;
+                case 3: Device = 'Mac OS'; break;
+                case 4: Device = 'Fire OS'; break;
+                case 5: Device = 'GearVR'; break;
+                case 6: Device = 'Hololens'; break;
+                case 7:
+                case 8: Device = 'Windows'; break;
+                case 9: Device = 'Dedicated Server'; break;
+                case 11: Device = 'Playstation'; break;
+                case 12: Device = 'Nintendo Switch'; break;
+                case 13: Device = 'Xbox'; break;
+                case 14: Device = 'Windows'; break;
+                case 15: Device = 'Linux'; break;
+                default: Device = 'Unknown'; break;
+              }
+              const joinMessage = `${new Date().toISOString()} | ${Username} joined the Realm from ${Device}.`;
+              console.log(joinMessage);
+              playerNames.set(UUID, Username); 
+            }
+            break;
 
-    client.on('remove_player', (packet) => {
-      const leaveMessage = `${new Date().toISOString()} | A Player Left the Realm: ${packet.username}.`;
-      console.log(leaveMessage); 
+          case 'remove':
+            const removedPlayers = packet.records.records;
+            for (const player of removedPlayers) {
+              const Username = playerNames.get(player.uuid) || 'Unknown player';
+              const leaveMessage = `${new Date().toISOString()} | ${Username} left the Realm.`;
+              console.log(leaveMessage);
+              playerNames.delete(player.uuid); 
+            }
+            break;
+
+          default:
+            console.error("Unknown player_list packet type:", packet.records.type);
+            break;
+        }
+      } else {
+        console.error("Unexpected packet structure:", packet);
+      }
     });
 
     console.log(`Successfully connected to Realm with code: ${realmInvite}`);
