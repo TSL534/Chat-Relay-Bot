@@ -1,0 +1,28 @@
+{
+    "debug": false,
+    "webhook_url": "",
+    "realm_code": "",
+    "relay_settings": {
+        "messages": true,
+        "joins": true,
+        "leaves": true
+    },
+    "modules": {
+        "anti_spam": true,
+        "device_filter": {
+            "Unknown": true,
+            "Android": false,
+            "IOS": false,
+            "MacOS": false,
+            "FireOS": false,
+            "GearVR": false,
+            "Hololens": false,
+            "Windows": false,
+            "Dedicated Server": false,
+            "Playstation": false,
+            "Nintendo Switch": false,
+            "Xbox": false,
+            "Linux": false
+        }
+    }
+}

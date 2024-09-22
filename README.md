@@ -1,14 +1,22 @@
 ### Chat-Relay-Bot
 
-# How to Install/Use it
-* Insatall the Repo by going to the Green button Named Code and press Downlode ZIP
-* Make Sure you have VS (Visual Studios) or  any adder Code editor and have [NodeJS](https://nodejs.org/en/download) installed
-* Unzip the Zip and put the file in to the Editor
-* Now go in discord if you using the webhook methode and make a Discord Server Named anything and make a webhook in a channel where the messages should be sent (Edit Channel>Integrations>Creat Webhook>Copy Webhook URL)
-* Put you Realm Code in it and run the File , the bot will now ask you to link an Account . Link it and then it should join your Realm
+# Setup
+1. Clone or Download this repository.
+2. Make sure you have [NodeJS](https://nodejs.org/en/download) installed.
+3. Create a webhook on discord in the channel you want logs sent to.
+4. Fill in `webhook_url` and `realm_code` config.json values.
+5. Run `node .` in the terminal.
 
 
 * Blocks External Messages ✅
-* Sends Messages Back ❌
+* Block Specific Devices from Joining ✅
+* Discord -> Minecraft Relay ❌
+* Minecraft -> Discord Relay ✅
 * Logs Joins/Leaves ✅
 * Shows Device on Join ✅
+
+# Config Options
+* `debug`: logs more info on certain events.
+* `relay_settings`: choose which logs are/aren't sent
+* `anti_spam`: block regular spam
+* `device_filter`: block certain devices from joining
