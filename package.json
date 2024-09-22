@@ -1,0 +1,23 @@
+{
+  "name": "chat-relay-bot",
+  "version": "1.0.0",
+  "description": "Simple Chat Relay Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "keywords": [
+    "discord",
+    "discord-bot",
+    "minecraft",
+    "nodejs",
+    "script",
+    "javascript"
+  ],
+  "author": "TSL, NoVa Gh0ul",
+  "license": "ISC",
+  "dependencies": {
+    "bedrock-protocol": "^3.40.0",
+    "discord.js": "^14.16.2"
+  }
+}
