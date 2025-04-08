@@ -20,7 +20,7 @@ class Client {
         if (!this.realm_code) throw new Error("[Error]  >  realm_code value in config.json is empty.");
         if (!this.webhook) throw new Error("[Error]  >  webhook_url value in config.json is empty.");
         if (this.debug) console.log(`[Debug] [${title}] >  Building client...`);
-        this.client = await buildBot();
+        this.client = await this.buildBot()
         await this.relay();
     }
 
